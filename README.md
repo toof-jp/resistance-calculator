@@ -1,1 +1,1 @@
-# register
+# resistance-calculator
