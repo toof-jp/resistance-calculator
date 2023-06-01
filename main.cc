@@ -2,35 +2,51 @@
 #include <vector>
 
 int main() {
-  int n;
-  std::cin >> n;
-  std::vector<double> registers(n);
-  for (int i = 0; i < n; i++) {
-    std::cin >> registers[i];
+  constexpr int N = 3;
+  std::vector<double> registances(N);
+  for (int i = 0; i < N; i++) {
+    std::cout << "R" << i << ": ";
+    std::cin >> registances[i];
   }
 
-  for (int i = 0; i < n; i++) {
-    for (int j = 0; j < n; j++) {
-      for (int k = 0; k < n; k++) {
-        if (i == j or j == k or k == i) break;
+  double lower_limit, upper_limit;
+  std::cout << "lower limit: ";
+  std::cin >> lower_limit;
+  std::cout << "upper limit: ";
+  std::cin >> upper_limit;
+
+  for (int i = 0; i < N; i++) {
+    for (int j = 0; j < N; j++) {
+      for (int k = 0; k < N; k++) {
+        if (i == j or j == k or k == i) continue;
+
         for (int cond1 = 0; cond1 < 2; cond1++) {
           for (int cond2 = 0; cond2 < 2; cond2++) {
-            double tmp;
-            if (cond1 == 0) {
-              tmp = registers[i] + registers[j];
-            } else {
-              tmp = registers[i] * registers[j] / (registers[i] + registers[j]);
+            double r_temp;
+            if (cond1 == 0) { // series connection
+              r_temp = registances[i] + registances[j];
+            } else { // parallel connection
+              r_temp = registances[i] * registances[j] / (registances[i] + registances[j]);
             }
 
             double r;
-            if (cond2 == 0) {
-              r = tmp + registers[k];
-            } else {
-              r = tmp * registers[k] / (tmp + registers[k]);
+            if (cond2 == 0) { // series connection
+              r = r_temp + registances[k];
+            } else { // parallel connection
+              r = r_temp * registances[k] / (r_temp + registances[k]);
             }
 
-            if (600 <= r and r <= 700) {
-              std::cout << "r: " << r << "| " << i << " " << j << " " << k << " " << cond1 << " " << cond2 << std::endl;
+            if (lower_limit <= r and r <= upper_limit) {
+              std::cout << "R = " << r << "[ohm]\n";
+
+              std::cout << (cond2 ? "parallel" : "series") << "(";
+              std::cout << (cond1 ? "parallel" : "series") << "(";
+              std::cout << "R" << i << " = " << registances[i] << "[ohm]";
+              std::cout << ", ";
+              std::cout << "R" << j << " = " << registances[j] << "[ohm]";
+              std::cout << "), ";
+              std::cout << "R" << k << " = " << registances[k] << "[ohm]";
+              std::cout << ")\n\n";
             }
           }
         }
